@@ -6,6 +6,7 @@
 - ID
 - Name
 - Box office
+- Date
 - Genre
 
 ### Actor/Actress
@@ -13,9 +14,9 @@
 - Name
     - First name
     - Last name
-- Works
+- Award(s)
 
-### Company
+### Studio
 - Name
 - Headquarter location
 - CEO
@@ -26,9 +27,8 @@
 - Name
     - First name
     - Last name
-- Works
 
 ### Theater
 - ID
 - Name
-- Location
+- Address

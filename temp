@@ -1,0 +1,40 @@
+SELECT * FROM "Movie" WHERE "Genre" = "驚悚";
+SELECT * FROM "Actor" WHERE "Award(s) in 2022" = "None";
+
+DELETE FROM "Movie" WHERE "id" = 14 ;
+
+INSERT INTO "Movie" ("Name" ,"Date", "Box office (US$)", "Genre", "DirectorID", "Distributed by") VALUES ("雷神索爾4", "2022-07-06", 7600000000, "動作", 14, "索尼影業");
+
+UPDATE "Movie" SET "Box office (US$)" = 4100000000 WHERE "Name" = "秘境探險" ;
+
+SELECT * FROM "Actor" WHERE "id" IN ("索尼影業", "環球影業");
+
+-- 所有沒在新光影城上映的電影
+SELECT * FROM "Movie" WHERE "id" NOT IN(
+    SELECT "MovieID" FROM "MovieTheater" WHERE EXISTS
+        (SELECT * FROM "Theater" WHERE "Theater"."id" = "MovieTheater"."TheaterID" AND "Theater"."Name" = "新光影城"))
+
+-- 找出有出演這部電影的演員
+SELECT * FROM "Actor" WHERE "id" IN
+    (SELECT "ActorID" FROM "ActorMovie" WHERE EXISTS
+        (SELECT * FROM "Movie" WHERE "Movie"."id" = "ActorMovie"."MovieID" AND "Movie"."Name" = "紅色通緝令"))
+
+-- 今年沒有演電影的演員
+SELECT * FROM "Actor" WHERE "id" IN
+    (SELECT "ActorID" FROM "ActorMovie" WHERE NOT EXISTS
+        (SELECT * FROM "Movie" WHERE "Movie"."id" = "ActorMovie"."MovieID" AND "Movie"."Date" > "2022-01-01" ))
+
+SELECT COUNT("id") FROM "Movie" WHERE "Genre" = "動作";
+
+SELECT Genre, SUM("Box office (US$)") FROM "Movie" WHERE Genre = "喜劇";
+
+SELECT "Name", MAX("Box office (US$)") FROM "Movie" ;
+
+SELECT "Name", MIN("Box office (US$)") FROM "Movie" ;
+
+-- 各類電影的平均票房
+SELECT Genre, AVG("Box office (US$)")  FROM "Movie" GROUP BY "Genre";
+
+-- 發行超過2部電影的公司
+SELECT * FROM "Studio" WHERE "Name" IN
+    (SELECT "Distributed by" FROM "Movie" GROUP BY "Distributed by" HAVING COUNT(id) > 2);
