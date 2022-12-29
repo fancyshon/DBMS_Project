@@ -5,24 +5,24 @@ DELETE FROM "Movie" WHERE "id" = 14 ;
 
 INSERT INTO "Movie" ("Name" ,"Date", "Box office (US$)", "Genre", "DirectorID", "Distributed by") VALUES ("雷神索爾4", "2022-07-06", 7600000000, "動作", 14, "索尼影業");
 
-UPDATE "Movie" SET "Box office (US$)" = 4100000000 WHERE "Name" = "秘境探險" ;
+UPDATE "Movie" SET "Box office (US$)" = 7610000000 WHERE "id" = 14 ;
 
-SELECT * FROM "Actor" WHERE "id" IN ("索尼影業", "環球影業");
+SELECT * FROM "Movie" WHERE "Distributed by" IN ("索尼影業", "環球影業");
 
 -- 所有沒在新光影城上映的電影
 SELECT * FROM "Movie" WHERE "id" NOT IN(
     SELECT "MovieID" FROM "MovieTheater" WHERE EXISTS
-        (SELECT * FROM "Theater" WHERE "Theater"."id" = "MovieTheater"."TheaterID" AND "Theater"."Name" = "新光影城"))
+        (SELECT * FROM "Theater" WHERE "Theater"."id" = "MovieTheater"."TheaterID" AND "Theater"."Name" = "新光影城"));
 
 -- 找出有出演這部電影的演員
 SELECT * FROM "Actor" WHERE "id" IN
     (SELECT "ActorID" FROM "ActorMovie" WHERE EXISTS
-        (SELECT * FROM "Movie" WHERE "Movie"."id" = "ActorMovie"."MovieID" AND "Movie"."Name" = "紅色通緝令"))
+        (SELECT * FROM "Movie" WHERE "Movie"."id" = "ActorMovie"."MovieID" AND "Movie"."Name" = "紅色通緝令"));
 
 -- 今年沒有演電影的演員
 SELECT * FROM "Actor" WHERE "id" IN
     (SELECT "ActorID" FROM "ActorMovie" WHERE NOT EXISTS
-        (SELECT * FROM "Movie" WHERE "Movie"."id" = "ActorMovie"."MovieID" AND "Movie"."Date" > "2022-01-01" ))
+        (SELECT * FROM "Movie" WHERE "Movie"."id" = "ActorMovie"."MovieID" AND "Movie"."Date" > "2022-01-01" ));
 
 SELECT COUNT("id") FROM "Movie" WHERE "Genre" = "動作";
 

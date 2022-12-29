@@ -46,9 +46,9 @@ class MainWindow(QtWidgets.QMainWindow):
         elif self.ui.comboBox.currentText() == "DELETE":
             query = """DELETE FROM "Movie" WHERE "id" = 14 ;"""
         elif self.ui.comboBox.currentText() == "INSERT":
-            query = """INSERT INTO "Movie" ("Name" ,"Date", "Box office (US$)", "Genre", "DirectorID", "Distributed by") VALUES ("雷神索爾4", "2022-07-06", 7600000000, "動作", 14, "索尼影業");"""
+            query = """INSERT INTO "Movie" ("id", "Name" ,"Date", "Box office (US$)", "Genre", "DirectorID", "Distributed by") VALUES (14, "雷神索爾4", "2022-07-06", 7600000000, "動作", 14, "索尼影業");"""
         elif self.ui.comboBox.currentText() == "UPDATE":
-            query = """UPDATE "Movie" SET "Box office (US$)" = 4100000000 WHERE "Name" = "秘境探險" ;"""
+            query = """UPDATE "Movie" SET "Box office (US$)" = 7610000000 WHERE "id" = 14 ;"""
         if self.ui.comboBox.currentText() == "IN":
             query = """SELECT * FROM "Movie" WHERE "Distributed by" IN ("索尼影業", "環球影業");"""
         elif self.ui.comboBox.currentText() == "NOT IN":
@@ -64,13 +64,16 @@ class MainWindow(QtWidgets.QMainWindow):
                             (SELECT * FROM "Movie" WHERE "Movie"."id" = "ActorMovie"."MovieID" AND "Movie"."Name" = "紅色通緝令"))
                     """
         elif self.ui.comboBox.currentText() == "NOT EXISTS":
-            query = """SELECT COUNT("id") FROM "Movie" WHERE "Genre" = "動作";"""
+            query = """SELECT * FROM "Actor" WHERE "id" IN
+                        (SELECT "ActorID" FROM "ActorMovie" WHERE NOT EXISTS
+                            (SELECT * FROM "Movie" WHERE "Movie"."id" = "ActorMovie"."MovieID" AND "Movie"."Date" > "2022-01-01" ));
+                    """
         elif self.ui.comboBox.currentText() == "COUNT":
             query = """SELECT COUNT("id") FROM "Movie" WHERE "Genre" = "動作";"""
         elif self.ui.comboBox.currentText() == "SUM":
             query = """SELECT Genre, SUM("Box office (US$)") FROM "Movie" WHERE Genre = "喜劇";"""
         elif self.ui.comboBox.currentText() == "MAX":
-            query = """SELECT "Name", MAX("Box office (US$)") FROM "Movie";"""
+            query = """SELECT "Name", MAX("Revenue (US$)") FROM "Studio" ;"""
         elif self.ui.comboBox.currentText() == "MIN":
             query = """SELECT "Name", MIN("Box office (US$)") FROM "Movie";"""
         elif self.ui.comboBox.currentText() == "AVG":
@@ -83,6 +86,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         result = SQL_query(query, "MovieManagement.db")
         result_str = ""
+
+        result_str += "Exrcuted query : {}\n\n".format(query)
 
         for row in result:
             for x in row:
